@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 15, 23, 42;
+  --background-end-rgb: 3, 7, 18;
+  --primary-color: 16, 185, 129;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,7 +17,99 @@
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: rgb(var(--foreground-rgb));
+  background: radial-gradient(
+    circle at top right,
+    rgb(var(--primary-color), 0.15),
+    transparent 40%
+  ),
+  radial-gradient(
+    circle at bottom left,
+    rgb(var(--primary-color), 0.1),
+    transparent 40%
+  ),
+  linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .navLink {
+    @apply cursor-pointer hover:text-emerald-400 transition duration-300;
+  }
+  
+  .heroButton {
+    @apply px-6 py-2 font-bold text-white transition duration-300 rounded-md hover:bg-opacity-80;
+  }
+  
+  .movieCard {
+    @apply relative overflow-hidden transition-all duration-300 rounded-lg hover:scale-105 hover:shadow-emerald-500/25 hover:shadow-lg;
+  }
+
+  .ambient-blur {
+    @apply before:absolute before:inset-0 before:bg-gradient-to-r before:from-emerald-500/10 before:to-transparent before:blur-xl before:-z-10;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .snap-x {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .snap-start {
+    scroll-snap-align: start;
+  }
+
+  .fixed-header {
+    @apply fixed top-0 left-0 right-0 z-50;
+  }
+
+  .content-below-header {
+    @apply pt-16;
+  }
+
+  .prevent-redirect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .video-container {
+    @apply prevent-redirect relative w-full h-full;
+    touch-action: none;
+  }
+
+  .video-fullscreen {
+    @apply fixed inset-0 w-full h-full bg-black z-50;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .prevent-touch-redirect {
+    touch-action: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+}
+
+/* Prevent pull-to-refresh on mobile */
+html, body {
+  overscroll-behavior-y: contain;
 }
