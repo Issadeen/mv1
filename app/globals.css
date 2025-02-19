@@ -1,40 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 15, 23, 42;
-  --background-end-rgb: 3, 7, 18;
-  --primary-color: 16, 185, 129;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer theme {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 15, 23, 42;
+    --background-end-rgb: 3, 7, 18;
+    --primary-color: 16, 185, 129;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: radial-gradient(
-    circle at top right,
-    rgb(var(--primary-color), 0.15),
-    transparent 40%
-  ),
-  radial-gradient(
-    circle at bottom left,
-    rgb(var(--primary-color), 0.1),
-    transparent 40%
-  ),
-  linear-gradient(
-    to bottom,
-    rgb(var(--background-start-rgb)),
-    rgb(var(--background-end-rgb))
-  );
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    color: rgb(var(--foreground-rgb));
+    background: 
+      radial-gradient(
+        circle at top right,
+        color-mix(in oklab, rgb(var(--primary-color)) 15%, transparent)
+        40%
+      ),
+      radial-gradient(
+        circle at bottom left,
+        color-mix(in oklab, rgb(var(--primary-color)) 10%, transparent)
+        40%
+      ),
+      linear-gradient(
+        to bottom,
+        rgb(var(--background-start-rgb)),
+        rgb(var(--background-end-rgb))
+      );
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+  }
 }
 
 @layer components {
@@ -75,11 +71,11 @@ body {
   }
 
   .fixed-header {
-    @apply fixed top-0 left-0 right-0 z-50;
+    @apply fixed top-0 left-0 right-0 z-[100] bg-slate-900/75 backdrop-blur-sm;
   }
 
   .content-below-header {
-    @apply pt-16;
+    @apply pt-20 md:pt-24;
   }
 
   .prevent-redirect {
@@ -90,26 +86,59 @@ body {
   }
 
   .video-container {
-    @apply prevent-redirect relative w-full h-full;
-    touch-action: none;
+    @apply relative w-full h-full bg-black;
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  .video-frame-container {
+    @apply relative w-full h-full;
+    pointer-events: auto;
+    isolation: isolate;
+  }
+
+  .video-frame {
+    @apply w-full h-full;
+    pointer-events: auto;
+    touch-action: manipulation;
   }
 
   .video-fullscreen {
-    @apply fixed inset-0 w-full h-full bg-black z-50;
-    touch-action: none;
+    @apply fixed inset-0 w-full h-full bg-black z-[200];
+    touch-action: pan-x pan-y;
     -webkit-user-select: none;
     user-select: none;
   }
 
   .prevent-touch-redirect {
-    touch-action: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
+    touch-action: pan-x pan-y !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
 /* Prevent pull-to-refresh on mobile */
 html, body {
   overscroll-behavior-y: contain;
+}
+
+/* Global touch handling */
+html {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Update iframe styles */
+iframe {
+  @apply w-full h-full;
+  pointer-events: auto;
+  touch-action: manipulation;
+  z-index: 2;
 }

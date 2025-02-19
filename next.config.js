@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   typescript: {
     ignoreBuildErrors: false,
   },
@@ -20,7 +19,24 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    domains: ['image.tmdb.org', 'themoviedb.org'],
   },
+  async headers() {
+    return [
+      {
+        source: '/api/stream/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
+        ],
+      },
+    ];
+  },
+  experimental: {
+    optimizeCss: true,
+    // Enhanced CSS optimization
+    cssMinifier: 'lightningcss',
+  }
 }
 
 module.exports = nextConfig
